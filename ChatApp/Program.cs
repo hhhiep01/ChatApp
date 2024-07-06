@@ -1,3 +1,4 @@
+using ChatApp.DataService;
 using ChatApp.Hubs;
 using Microsoft.AspNetCore.SignalR;
 
@@ -19,6 +20,8 @@ builder.Services.AddCors(opt =>
     });
 });
 
+builder.Services.AddSingleton<SharedDb>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -37,12 +40,4 @@ app.MapHub<ChatHub>("/Chat");
 
 app.Run();
 
-// Sample SignalR hub
-public class ChatHub : Microsoft.AspNetCore.SignalR.Hub
-{
-    public async Task JoinSpecificChatRoom(string username, string chatroom)
-    {
-        await Clients.Group(chatroom).SendAsync("JoinSpecificChatRoom", username, $"User {username} has joined the chatroom {chatroom}");
-        await Groups.AddToGroupAsync(Context.ConnectionId, chatroom);
-    }
-}
+
